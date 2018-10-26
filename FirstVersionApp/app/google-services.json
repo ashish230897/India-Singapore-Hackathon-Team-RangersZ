@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "848713833339",
+    "firebase_url": "https://firstversionapp.firebaseio.com",
+    "project_id": "firstversionapp",
+    "storage_bucket": "firstversionapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848713833339:android:c819aac1ecf2e5ca",
+        "android_client_info": {
+          "package_name": "com.example.ashish.firstversionapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848713833339-9hhvaflldrnjrdhsprmnjfvrod63n00v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz81frV3HCllx4xIYI-sCU6LG03gBK_bs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

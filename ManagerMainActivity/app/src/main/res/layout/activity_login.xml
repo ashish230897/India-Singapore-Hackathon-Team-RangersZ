@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:layout_margin="15dp"
+        android:inputType="textEmailAddress"
+        android:id="@+id/emailId"
+        android:hint="Enter Your Email.."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        />
+
+    <EditText
+        android:layout_margin="15dp"
+        android:inputType="textPassword"
+        android:id="@+id/PassKey"
+        android:hint="Enter Your Password.."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        />
+    <Button
+        android:id="@+id/buttonLogin"
+        android:text="Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:textAlignment="center"
+        android:id="@+id/SignUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:text="If not registered then sign up here!"/>
+
+
+</LinearLayout>
