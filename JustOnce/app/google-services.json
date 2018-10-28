@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "66273801134",
+    "firebase_url": "https://justonce-aa14b.firebaseio.com",
+    "project_id": "justonce-aa14b",
+    "storage_bucket": "justonce-aa14b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:66273801134:android:2f5ed4d128756ab2",
+        "android_client_info": {
+          "package_name": "com.sih.justonce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "66273801134-7qa5fa6g5ttjllve1ndbjbnqidnsao4o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sih.justonce",
+            "certificate_hash": "f719609eab1d604e86b56d8762e7c896144fe6d2"
+          }
+        },
+        {
+          "client_id": "66273801134-qu1lgg8mdb3r4ifuldl91402j3gl9gvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUuxAdsgT-K_Vr1z0f2y6JBDn3n3cEgGs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "66273801134-qu1lgg8mdb3r4ifuldl91402j3gl9gvk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

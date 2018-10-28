@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">JustOnce</string>
+    <string name="email_hint">Enter your email...</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="login">Login</string>
+    <string name="signup">If not registered then signup here</string>
+    <string name="myname">Name</string>
+    <string name="age">Age</string>
+    <string name="number">Contact Number</string>
+    <string name="register">Register</string>
 </resources>
