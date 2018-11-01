@@ -18,14 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SignUp"
-            android:label="New Registeration" ></activity>
-
+            android:label="New Registeration" />
         <activity
             android:name=".EventCategories"
-            android:label="Event Categories"></activity>
+            android:label="Event Categories" />
+        <activity android:name=".Events"></activity>
     </application>
 
 </manifest>
