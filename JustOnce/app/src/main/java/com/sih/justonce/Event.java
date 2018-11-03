@@ -4,6 +4,7 @@ public class Event {
     private String name;
     private String description;
     private int imageResourceId;
+    public static Event[] events;
 
     private Event(String name, String description, int imageResourceId){
         this.name = name;
@@ -13,9 +14,9 @@ public class Event {
 
     public static Event[] getEvents(){
 
-        Event[] events = new Event[2];
+         events = new Event[2];
 
-        // imageResourceId should be some imgae in drawable i.e R.drawable.IRC
+        // imageResourceId should be some image in drawable i.e R.drawable.IRC
         events[0] = new Event("IRC", "The zonal qualifying rounds for the competition will be held in various countries," +
                 " whose winning entries will be invited to compete in the IRC Grand Finale to be held at" +
                 " Techfest 2018-19, IIT Bombay. ", 1);

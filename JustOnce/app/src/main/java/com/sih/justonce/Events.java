@@ -1,5 +1,6 @@
 package com.sih.justonce;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +23,10 @@ public class Events extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // intent to migrate to event details activity
+                Intent intent = new Intent(Events.this, EventDetails.class);
+                intent.putExtra(EventDetails.EXTRA_NAME,Event.events[position].getName());
+                intent.putExtra(EventDetails.EXTRA_DESC,Event.events[position].getDescription());
+                startActivity(intent);
             }
         };
 

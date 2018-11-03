@@ -24,7 +24,8 @@
         <activity
             android:name=".EventCategories"
             android:label="Event Categories" />
-        <activity android:name=".Events"></activity>
+        <activity android:name=".Events" />
+        <activity android:name=".EventDetails"></activity>
     </application>
 
 </manifest>
