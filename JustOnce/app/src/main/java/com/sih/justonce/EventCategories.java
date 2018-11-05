@@ -29,6 +29,8 @@ public class EventCategories extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // intent to migrate to events activity
+                Intent intent = new Intent(EventCategories.this,Events.class);
+                startActivity(intent);
             }
         };
 
