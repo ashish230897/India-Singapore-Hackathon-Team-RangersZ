@@ -9,8 +9,12 @@ public class EventDetails extends AppCompatActivity {
 
     public static final String EXTRA_NAME = "event_name";
     public static final String EXTRA_DESC = "event_desc";
+    public static final String EXTRA_START = "start_date";
+    public static final String EXTRA_END = "end_date";
     private String eventName;
     private String eventDescription;
+    private String startDate;
+    private String endDate;
 
 
     @Override

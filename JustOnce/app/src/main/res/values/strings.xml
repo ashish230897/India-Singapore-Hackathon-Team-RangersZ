@@ -11,4 +11,6 @@
     <string name="userLogin">Login as User</string>
     <string name="managerLogin">Login as Manager</string>
     <string name="logout">Logout</string>
+    <string name="registerEvent">Register for Event</string>
+    <string name="unregisterEvent">Unregister for Event</string>
 </resources>
