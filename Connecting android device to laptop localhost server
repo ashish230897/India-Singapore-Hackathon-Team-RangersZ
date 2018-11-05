@@ -1,0 +1,24 @@
+If both your desktop and phone are connected to the same WiFi (or any other local network), then use your desktop IP address assigned by the router (not localhost and not 127.0.0.1).
+
+To find out the IP address of your desktop:
+
+    type into the command line ipconfig (Windows) or ifconfig (Unix)
+        on Linux the one-liner ifconfig | grep "inet " | grep -v 127.0.0.1 will yield only the important stuff
+        there's a bunch of suggestions on how to have a similar output on Windows
+    there's going to be a bunch of IP's
+    try all of them (except the forementioned localhost and 127.0.0.1)
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Another solution that should always work is ngrok (as mentioned in other answers). It works over the Internet, and not the local network.
+
+It's extremely easy to use:
+
+brew cask install ngrok
+ngrok http 4000 // port on which local server is running
+
+This outputs, among some other information, a line like
+
+Forwarding                    http://4cc5ac02.ngrok.io -> localhost:4000
+
+Now, you can navigate to http://4cc5ac02.ngrok.io on any device that is connected to the Internet, and this URL redirects to localhost:4000 of your laptop.

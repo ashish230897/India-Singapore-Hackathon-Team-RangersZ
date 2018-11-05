@@ -1,0 +1,307 @@
+/*
+Stop and remove all docker containers
+*/
+docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+
+/*
+Starting from zero
+*/
+cd ~/fabric-dev-servers
+export FABRIC_VERSION=hlfv11
+./stopFabric.sh
+./teardownFabric.sh
+
+/*
+Download fabric samples from git
+*/
+git clone -b issue-6978 https://github.com/sstone1/fabric-samples.git
+
+/*
+Download required binaries and run the underlying first network
+*/
+cd fabric-samples
+curl -sSL https://goo.gl/6wtTN5 | bash -s 1.1.0  1.1.0  0.4.6
+cd first-network
+./byfn.sh -m generate
+./byfn.sh -m up -s couchdb -a
+
+/*
+Deleting the cards that were created before
+The cards are imported into .composer directory in home.
+*/
+composer card delete -c PeerAdmin@byfn-network-org1
+composer card delete -c PeerAdmin@byfn-network-org2
+composer card delete -c alice@trade-network
+composer card delete -c bob@trade-network
+composer card delete -c admin@trade-network
+composer card delete -c PeerAdmin@fabric-network
+
+/*
+Create temporary directories for both the orgs
+*/
+mkdir -p /tmp/composer/org1
+mkdir -p /tmp/composer/org2
+
+/*
+Copy the below .json file into byfn-network.json and store
+into composer folder in tmp
+*/
+{
+    "name": "byfn-network",
+    "x-type": "hlfv1",
+    "version": "1.0.0",
+    "channels": {
+        "mychannel": {
+            "orderers": [
+                "orderer.example.com"
+            ],
+            "peers": {
+                "peer0.org1.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                },
+                "peer1.org1.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                },
+                "peer0.org2.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                },
+                "peer1.org2.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                }
+            }
+        }
+    },
+    "organizations": {
+        "Org1": {
+            "mspid": "Org1MSP",
+            "peers": [
+                "peer0.org1.example.com",
+                "peer1.org1.example.com"
+            ],
+            "certificateAuthorities": [
+                "ca.org1.example.com"
+            ]
+        },
+        "Org2": {
+            "mspid": "Org2MSP",
+            "peers": [
+                "peer0.org2.example.com",
+                "peer1.org2.example.com"
+            ],
+            "certificateAuthorities": [
+                "ca.org2.example.com"
+            ]
+        }
+    },
+    "orderers": {
+        "orderer.example.com": {
+            "url": "grpcs://localhost:7050",
+            "grpcOptions": {
+                "ssl-target-name-override": "orderer.example.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORDERER_CA_CERT"
+            }
+        }
+    },
+    "peers": {
+        "peer0.org1.example.com": {
+            "url": "grpcs://localhost:7051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.org1.example.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG1_CA_CERT"
+            }
+        },
+        "peer1.org1.example.com": {
+            "url": "grpcs://localhost:8051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.org1.example.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG1_CA_CERT"
+            }
+        },
+        "peer0.org2.example.com": {
+            "url": "grpcs://localhost:9051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.org2.example.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG2_CA_CERT"
+            }
+        },
+        "peer1.org2.example.com": {
+            "url": "grpcs://localhost:10051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.org2.example.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG2_CA_CERT"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.org1.example.com": {
+            "url": "https://localhost:7054",
+            "caName": "ca-org1",
+            "httpOptions": {
+                "verify": false
+            }
+        },
+        "ca.org2.example.com": {
+            "url": "https://localhost:8054",
+            "caName": "ca-org2",
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
+
+
+/*
+Convert the .crt file of peer0 in org1 to .txt file
+The contents are used to replace INSERT_ORG1_CA_CERT in byfn-network.json file
+Similar command is used for orderer and peer0 of org2
+*/
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt > /tmp/composer/org1/ca-org1.txt
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt > /tmp/composer/org2/ca-org2.txt
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt > /tmp/composer/ca-orderer.txt
+/*
+After above step,copy the contents of both peers and orderer ca.txt file into their resp. .json file.
+*/
+
+/*
+Create the byfn-network files for both orgs and Copy the following content into those files.
+*/
+    "client": {
+        "organization": "Org1",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300",
+                    "eventHub": "300",
+                    "eventReg": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+
+    "client": {
+        "organization": "Org2",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300",
+                    "eventHub": "300",
+                    "eventReg": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+
+
+/*
+Copy the .pem and private key files of admin of both orgs in thier org folders in tmp.
+*/
+export ORG1=crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+cp -p $ORG1/signcerts/A*.pem /tmp/composer/org1
+cp -p $ORG1/keystore/*_sk /tmp/composer/org1
+export ORG2=crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+cp -p $ORG2/signcerts/A*.pem /tmp/composer/org2
+cp -p $ORG2/keystore/*_sk /tmp/composer/org2
+
+
+/*
+Create card for the admins of both orgs so that they can deploy the business network to the fabric
+*/
+composer card create -p /tmp/composer/org1/byfn-network-org1.json -u PeerAdmin -c /tmp/composer/org1/Admin@org1.example.com-cert.pem -k /tmp/composer/org1/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org1.card
+composer card create -p /tmp/composer/org2/byfn-network-org2.json -u PeerAdmin -c /tmp/composer/org2/Admin@org2.example.com-cert.pem -k /tmp/composer/org2/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org2.card
+
+/*
+Import the business network card for the admins of both orgs
+*/
+composer card import -f PeerAdmin@byfn-network-org2.card --card PeerAdmin@byfn-network-org2
+composer card import -f PeerAdmin@byfn-network-org1.card --card PeerAdmin@byfn-network-org1
+
+/*
+This command creates the skeleton for the business network
+*/
+yo hyperledger-composer:businessnetwork
+
+/*
+This creates the banana file after creating the model .cto,.js and .acl file
+Copy the banana file from identity-network folder to first-network folder
+*/
+composer archive create -t dir -n .
+
+/*
+Install the business network on the fabric through admin's network card
+*/
+composer network install --card PeerAdmin@byfn-network-org1 --archiveFile identity-network@0.1.14.bna
+composer network install --card PeerAdmin@byfn-network-org2 --archiveFile identity-network@0.1.14.bna
+
+/*
+Copy this into endorsement-policy.json file in composer folder.
+*/
+{
+    "identities": [
+        {
+            "role": {
+                "name": "member",
+                "mspId": "Org1MSP"
+            }
+        },
+        {
+            "role": {
+                "name": "member",
+                "mspId": "Org2MSP"
+            }
+        }
+    ],
+    "policy": {
+        "2-of": [
+            {
+                "signed-by": 0
+            },
+            {
+                "signed-by": 1
+            }
+        ]
+    }
+}
+
+/*
+Run the composer identity request command to retrieve certificates for Alice to use as the business network administrator for Org1
+Do the same for Bob for org2
+*/
+composer identity request -c PeerAdmin@byfn-network-org1 -u admin -s adminpw -d alice
+composer identity request -c PeerAdmin@byfn-network-org2 -u admin -s adminpw -d bob
+
+/*
+Start the network
+*/
+composer network start -c PeerAdmin@byfn-network-org1 -n identity-network -V 0.1.14 -o endorsementPolicyFile=/tmp/composer/endorsement-policy.json -A alice -C alice/admin-pub.pem -A bob -C bob/admin-pub.pem
+
+/*
+Run the composer card create command to create a business network card that Alice, the business network administrator for Org1, can use to access the business network
+Import the business card
+*/
+composer card create -p /tmp/composer/org1/byfn-network-org1.json -u alice -n identity-network -c alice/admin-pub.pem -k alice/admin-priv.pem
+composer card import -f alice@identity-network.card
+composer card create -p /tmp/composer/org2/byfn-network-org2.json -u bob -n identity-network -c bob/admin-pub.pem -k bob/admin-priv.pem
+composer card import -f bob@identity-network.card
+
+
