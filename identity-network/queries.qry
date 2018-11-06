@@ -1,0 +1,16 @@
+/**
+ * New query file
+ */
+
+query GetStudentDataForGivenID {
+	description: "get data for given id"
+  	statement:
+  		SELECT org.example.identity.StudentDetails
+  			WHERE (studentID == _$inputValue)
+}
+
+query GetHistory {
+	description: "get entire transaction history"
+  	statement:
+  		SELECT org.hyperledger.composer.system.HistorianRecord
+}

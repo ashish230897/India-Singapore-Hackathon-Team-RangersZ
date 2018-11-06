@@ -7,7 +7,7 @@ docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 Starting from zero
 */
 cd ~/fabric-dev-servers
-export FABRIC_VERSION=hlfv11
+export FABRIC_VERSION=hlfv12
 ./stopFabric.sh
 ./teardownFabric.sh
 
@@ -39,8 +39,8 @@ composer card delete -c PeerAdmin@fabric-network
 /*
 Create temporary directories for both the orgs
 */
-mkdir -p /tmp/composer/org1
-mkdir -p /tmp/composer/org2
+mkdir -p /home/siddhesh/My_Folder/Hackathons/Hyperledger/fabric-dev-servers/fabric-samples/first-network/composer/org1
+mkdir -p /home/siddhesh/My_Folder/Hackathons/Hyperledger/fabric-dev-servers/fabric-samples/first-network/composer/org2
 
 /*
 Copy the below .json file into byfn-network.json and store
@@ -174,9 +174,9 @@ Convert the .crt file of peer0 in org1 to .txt file
 The contents are used to replace INSERT_ORG1_CA_CERT in byfn-network.json file
 Similar command is used for orderer and peer0 of org2
 */
-awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt > /tmp/composer/org1/ca-org1.txt
-awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt > /tmp/composer/org2/ca-org2.txt
-awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt > /tmp/composer/ca-orderer.txt
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt > composer/org1/ca-org1.txt
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt > composer/org2/ca-org2.txt
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt > composer/ca-orderer.txt
 /*
 After above step,copy the contents of both peers and orderer ca.txt file into their resp. .json file.
 */
@@ -217,18 +217,18 @@ Create the byfn-network files for both orgs and Copy the following content into 
 Copy the .pem and private key files of admin of both orgs in thier org folders in tmp.
 */
 export ORG1=crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-cp -p $ORG1/signcerts/A*.pem /tmp/composer/org1
-cp -p $ORG1/keystore/*_sk /tmp/composer/org1
+cp -p $ORG1/signcerts/A*.pem composer/org1
+cp -p $ORG1/keystore/*_sk composer/org1
 export ORG2=crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-cp -p $ORG2/signcerts/A*.pem /tmp/composer/org2
-cp -p $ORG2/keystore/*_sk /tmp/composer/org2
+cp -p $ORG2/signcerts/A*.pem composer/org2
+cp -p $ORG2/keystore/*_sk composer/org2
 
 
 /*
 Create card for the admins of both orgs so that they can deploy the business network to the fabric
 */
-composer card create -p /tmp/composer/org1/byfn-network-org1.json -u PeerAdmin -c /tmp/composer/org1/Admin@org1.example.com-cert.pem -k /tmp/composer/org1/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org1.card
-composer card create -p /tmp/composer/org2/byfn-network-org2.json -u PeerAdmin -c /tmp/composer/org2/Admin@org2.example.com-cert.pem -k /tmp/composer/org2/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org2.card
+composer card create -p composer/org1/byfn-network-org1.json -u PeerAdmin -c composer/org1/Admin@org1.example.com-cert.pem -k composer/org1/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org1.card
+composer card create -p composer/org2/byfn-network-org2.json -u PeerAdmin -c composer/org2/Admin@org2.example.com-cert.pem -k composer/org2/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org2.card
 
 /*
 Import the business network card for the admins of both orgs
@@ -293,15 +293,15 @@ composer identity request -c PeerAdmin@byfn-network-org2 -u admin -s adminpw -d 
 /*
 Start the network
 */
-composer network start -c PeerAdmin@byfn-network-org1 -n identity-network -V 0.1.14 -o endorsementPolicyFile=/tmp/composer/endorsement-policy.json -A alice -C alice/admin-pub.pem -A bob -C bob/admin-pub.pem
+composer network start -c PeerAdmin@byfn-network-org1 -n identity-network -V 0.1.14 -o endorsementPolicyFile=composer/endorsement-policy.json -A alice -C alice/admin-pub.pem -A bob -C bob/admin-pub.pem
 
 /*
 Run the composer card create command to create a business network card that Alice, the business network administrator for Org1, can use to access the business network
 Import the business card
 */
-composer card create -p /tmp/composer/org1/byfn-network-org1.json -u alice -n identity-network -c alice/admin-pub.pem -k alice/admin-priv.pem
+composer card create -p composer/org1/byfn-network-org1.json -u alice -n identity-network -c alice/admin-pub.pem -k alice/admin-priv.pem
 composer card import -f alice@identity-network.card
-composer card create -p /tmp/composer/org2/byfn-network-org2.json -u bob -n identity-network -c bob/admin-pub.pem -k bob/admin-priv.pem
+composer card create -p composer/org2/byfn-network-org2.json -u bob -n identity-network -c bob/admin-pub.pem -k bob/admin-priv.pem
 composer card import -f bob@identity-network.card
 
 
