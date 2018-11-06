@@ -18,48 +18,47 @@
 
 namespace org.example.identity
 
-participant Student identified by studentID {
-  o String studentID //hash(email + password)
+participant User identified by userID {
+  o String userID //hash(email + password)
   
 }
 
-asset StudentDetails identified by studentID {
-  	o String studentID
+asset UserDetails identified by userID {
+  	o String userID
 	o String contact
     o String firstName
     o String lastName
     o String[] digitalIdentities
     o String[] events
-    --> Student owner
+    --> User owner
 }
 
 
-transaction UpdateStudentData {
-  --> StudentDetails sd
+transaction UpdateUserData {
+  --> UserDetails sd
   o String newFirstName
   o String newLastName
   o String newContact
 }
 
 transaction AddDigitalIdentity {
-  --> StudentDetails sd
+  --> UserDetails sd
   o String newDigitalIdentity
 }
 
 transaction AddEvent {
-  --> StudentDetails sd
+  --> UserDetails sd
   o String newEvent
 }
 
 @returns(Boolean)
-transaction checkStudent {
-  o String studentID
+transaction checkUser {
+  o String userID
 }
 
 @returns(String)
-transaction getStudentData {
-	o String studentID
-    o String event //just used for logging
+transaction getUserData {
+	o String userID
 }
 /*
 transaction getHistory {
@@ -68,7 +67,7 @@ transaction getHistory {
 */
 
 event QueriedData {
-  o String queriedStudentID
+  o String queriedUserID
   o String forEvent
 }
 

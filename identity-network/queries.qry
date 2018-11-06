@@ -2,11 +2,11 @@
  * New query file
  */
 
-query GetStudentDataForGivenID {
+query GetUserDataForGivenID {
 	description: "get data for given id"
   	statement:
-  		SELECT org.example.identity.StudentDetails
-  			WHERE (studentID == _$inputValue)
+  		SELECT org.example.identity.UserDetails
+  			WHERE (userID == _$inputValue)
 }
 
 query GetHistory {
@@ -14,3 +14,18 @@ query GetHistory {
   	statement:
   		SELECT org.hyperledger.composer.system.HistorianRecord
 }
+
+query showUpdatedDataHistory{ 
+  description: "show history of all update data transactions" 
+  statement: 
+    SELECT org.hyperledger.composer.system.HistorianRecord FROM HistorianRegistry
+          WHERE (transactionType == 'UpdateUserData') 
+} 
+
+query showAddEventHistory{ 
+  description: "show history of all event adding transactions to know which user gave data for which event" 
+  statement: 
+    SELECT org.hyperledger.composer.system.HistorianRecord FROM HistorianRegistry
+          WHERE (transactionType == 'AddEvent') 
+} 
+ 

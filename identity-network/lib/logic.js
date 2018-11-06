@@ -18,14 +18,14 @@
  */
 
 /**
- * Update Student Data processor function.
- * @param {org.example.identity.UpdateStudentData} tx The student update data instance.
+ * Update User Data processor function.
+ * @param {org.example.identity.UpdateUserData} tx The user update data instance.
  * @transaction
  */
-async function updateStudentData(tx) {
+async function updateUserData(tx) {
     // Save the old value of the asset.
     //const oldValue = tx.stu.email;
-	const oldFirstName = tx.sd.firstName;
+  const oldFirstName = tx.sd.firstName;
   const oldLastName = tx.sd.lastName;
   const oldContact = tx.sd.contact;
   
@@ -65,8 +65,8 @@ async function updateStudentData(tx) {
   emit(changedData);
  
     // Get the asset registry for the asset.
-    const assetRegistry = await getAssetRegistry('org.example.identity.StudentDetails');
-  	//const pr = await getParticipantRegistry('org.example.identity.Student');
+    const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+  	//const pr = await getParticipantRegistry('org.example.identity.User');
   	//await pr.update(tx.sd.owner); // update innermost first
     await assetRegistry.update(tx.sd);
   	
@@ -81,7 +81,7 @@ async function updateStudentData(tx) {
 async function addDigitalIdentity(tx){
   tx.sd.digitalIdentities.push(tx.newDigitalIdentity);
   
-  const assetRegistry = await getAssetRegistry('org.example.identity.StudentDetails');
+  const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
   await assetRegistry.update(tx.sd);
 }
 
@@ -94,40 +94,42 @@ async function addDigitalIdentity(tx){
 async function addEvent(tx){
   tx.sd.events.push(tx.newEvent);
   
-  const assetRegistry = await getAssetRegistry('org.example.identity.StudentDetails');
+  const logData = getFactory().newEvent('org.example.identity','QueriedData');
+  //emit event to log data in history
+  logData.forEvent = tx.newEvent;
+  logData.queriedUserID = tx.userID;
+  emit(logData);
+  
+  const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
   await assetRegistry.update(tx.sd);
 }
 
 /**
- * Update check Student processor function.
- * @param {org.example.identity.checkStudent} tx The check student instance.
+ * Update check User processor function.
+ * @param {org.example.identity.checkUser} tx The check user instance.
  * @transaction
  */
-async function checkStudent(tx) {
-	const assetRegistry = await getAssetRegistry('org.example.identity.StudentDetails');
-  	let result = await assetRegistry.exists(tx.studentID);
+async function checkUser(tx) {
+	const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+  	let result = await assetRegistry.exists(tx.userID);
   	
   //console.log("-----------------/n"+result);
   	return result;
 }
 
 /**
- * Get student data function.
- * @param {org.example.identity.getStudentData} tx .
+ * Get user data function.
+ * @param {org.example.identity.getUserData} tx .
  * @transaction
  */
-async function getStudentData(tx){
-	const assetRegistry = await getAssetRegistry('org.example.identity.StudentDetails');
+async function getUserData(tx){
+	const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
   
-  	let exists = await assetRegistry.exists(tx.studentID);
+  	let exists = await assetRegistry.exists(tx.userID);
   	var details = "";
   	if(exists){
-      	const logData = getFactory().newEvent('org.example.identity','QueriedData');
-      	//emit event to log data in history
-      	logData.forEvent = tx.event;
-      	logData.queriedStudentID = tx.studentID;
-      	emit(logData);
-  		details = await query('GetStudentDataForGivenID',{inputValue:tx.studentID});
+      	
+  		details = await query('GetUserDataForGivenID',{inputValue:tx.userID});
   		//console.log(JSON.stringify(details[0]));
       	return JSON.stringify(details[0]);
     }else{
@@ -137,26 +139,6 @@ async function getStudentData(tx){
   	
   	
 }
-
-/**
- * Get history of transactions.
- * @param {org.example.identity.getHistory} tx .
- * @transaction
- */
-/*
-async function getHistory(tx){
-	let history = await query('GetHistory');
-  	console.log(history);	
-  	let historyString = "";
-  	for(var tx in history ){
-    	historyString += JSON.stringify(tx.transactionType);
-      	historyString +="\n";
-    }
-  
-  console.log(historyString);
-  	
-}
-*/
 
 
 

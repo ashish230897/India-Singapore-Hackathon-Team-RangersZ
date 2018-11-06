@@ -17,15 +17,15 @@
  */
 rule EverybodyCanReadEverything {
     description: "Allow all participants read access to all resources"
-    participant: "org.example.identity.Student"
+    participant: "org.example.identity.User"
     operation: READ
-    resource: "org.example.identity.StudentDetails"
+    resource: "org.example.identity.UserDetails"
     action: ALLOW
 }
 
 rule EverybodyCanSubmitTransactions {
     description: "Allow all participants to submit transactions"
-    participant: "org.example.identity.Student"
+    participant: "org.example.identity.User"
     operation: CREATE
     resource: "org.example.identity.*"
     action: ALLOW
@@ -33,9 +33,9 @@ rule EverybodyCanSubmitTransactions {
 
 rule OwnerHasFullAccessToTheirAssets {
     description: "Allow all participants full access to their assets"
-    participant(p): "org.example.identity.Student"
+    participant(p): "org.example.identity.User"
     operation: ALL
-    resource(r): "org.example.identity.StudentDetails"
+    resource(r): "org.example.identity.UserDetails"
     condition: (r.owner.getIdentifier() === p.getIdentifier())
     action: ALLOW
 }
