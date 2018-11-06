@@ -1,0 +1,52 @@
+Format of JSON for creating new user(participant)
+{
+  "$class": "org.example.identity.User",
+  "userID": "8314"
+}
+
+Format of JSON for adding new user details(asset)
+{
+  "$class": "org.example.identity.UserDetails",
+  "userID": "1",
+  "contact": "8286",
+  "firstName": "sid",
+  "lastName": "gan",
+  "digitalIdentities": ["sid@gmail.com"],
+  "events": [],
+  "owner": "resource:org.example.identity.User#1"
+}
+
+Format of JSON for Adding new digital identity of user
+{
+  "$class": "org.example.identity.AddDigitalIdentity",
+  "sd": "resource:org.example.identity.UserDetails#6103",
+  "newDigitalIdentity": "new@gmail.com"
+}
+
+Format of JSON for Adding event to users list of events
+{
+  "$class": "org.example.identity.AddEvent",
+  "sd": "resource:org.example.identity.UserDetails#1",
+  "newEvent": "robowars"
+}
+
+Format of JSON for updating user data
+{
+  "$class": "org.example.identity.UpdateUserData",
+  "sd": "resource:org.example.identity.UserDetails#1",
+  "newFirstName": "",
+  "newLastName": "",
+  "newContact": ""
+}
+
+Format of JSON for checking user existance
+{
+  "$class": "org.example.identity.checkUser",
+  "userID": "1"
+}
+
+Format of JSON to get user data
+{
+  "$class": "org.example.identity.getUserData",
+  "userID": ""
+}
