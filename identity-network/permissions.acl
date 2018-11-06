@@ -12,54 +12,125 @@
  * limitations under the License.
  */
 
+'use strict';
 /**
- * Sample access control list.
+ * Write your transction processor functions here
  */
-rule EverybodyCanReadEverything {
-    description: "Allow all participants read access to all resources"
-    participant: "org.example.identity.User"
-    operation: READ
-    resource: "org.example.identity.UserDetails"
-    action: ALLOW
+
+/**
+ * Update User Data processor function.
+ * @param {org.example.identity.UpdateUserData} tx The user update data instance.
+ * @transaction
+ */
+async function updateUserData(tx) {
+   
+  const oldFirstName = tx.sd.firstName;
+  const oldLastName = tx.sd.lastName;
+  const oldContact = tx.sd.contact;
+  
+  //create Event object
+  const changedData = getFactory().newEvent('org.example.identity','UserDataChanged');
+  changedData.firstNameChange = [];
+  changedData.lastNameChange = [];
+  changedData.contactChange = [];
+  
+  if(tx.newFirstName!=null&&tx.newFirstName!=undefined&&tx.newFirstName!=""){
+  	tx.sd.firstName = tx.newFirstName;
+    changedData.firstNameChange.push(oldFirstName);
+    changedData.firstNameChange.push(tx.newFirstName);
+  }else{
+  	changedData.firstNameChange.push(oldFirstName);
+    changedData.firstNameChange.push(oldFirstName);
+  }
+  
+  if(tx.newLastName!=null||tx.newLastName!=undefined||tx.newLastName!=""){
+  	tx.sd.lastName = tx.newLastName;
+    changedData.lastNameChange.push(oldLastName);
+    changedData.lastNameChange.push(tx.newLastName);
+  }else{
+  	changedData.lastNameChange.push(oldLastName);
+    changedData.lastNameChange.push(oldLastName);
+  }
+  
+  if(tx.newContact!=null||tx.newContact!=undefined||tx.newContact!=""){
+  	tx.sd.contact = tx.newContact;
+    changedData.contactChange.push(oldContact);
+    changedData.contactChange.push(tx.newContact);
+  }else{
+  	changedData.contactChange.push(oldContact);
+    changedData.contactChange.push(oldContact);
+  }
+  
+  emit(changedData);
+ 
+    // Get the asset registry for the asset.
+    const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+    await assetRegistry.update(tx.sd);
+  	
+
 }
 
-rule EverybodyCanSubmitTransactions {
-    description: "Allow all participants to submit transactions"
-    participant: "org.example.identity.User"
-    operation: CREATE
-    resource: "org.example.identity.*"
-    action: ALLOW
+/**
+ * Linking different emails to a person.
+ * @param {org.example.identity.AddDigitalIdentity} tx
+ * @transaction
+ */
+async function addDigitalIdentity(tx){
+  tx.sd.digitalIdentities.push(tx.newDigitalIdentity);
+  
+  const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+  await assetRegistry.update(tx.sd);
 }
 
-rule OwnerHasFullAccessToTheirAssets {
-    description: "Allow all participants full access to their assets"
-    participant(p): "org.example.identity.User"
-    operation: ALL
-    resource(r): "org.example.identity.UserDetails"
-    condition: (r.owner.getIdentifier() === p.getIdentifier())
-    action: ALLOW
+
+/**
+ * Adding events that the person has attended person.
+ * @param {org.example.identity.AddEvent} tx
+ * @transaction
+ */
+async function addEvent(tx){
+  tx.sd.events.push(tx.newEvent);
+  
+  const logData = getFactory().newEvent('org.example.identity','QueriedData');
+  //emit event to log data in history
+  logData.forEvent = tx.newEvent;
+  logData.queriedUserID = tx.sd.userID;
+  emit(logData);
+  
+  const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+  await assetRegistry.update(tx.sd);
 }
 
-rule SystemACL {
-  description:  "System ACL to permit all access"
-  participant: "org.hyperledger.composer.system.Participant"
-  operation: ALL
-  resource: "org.hyperledger.composer.system.**"
-  action: ALLOW
+/**
+ * Update check User processor function.
+ * @param {org.example.identity.checkUser} tx The check user instance.
+ * @transaction
+ */
+async function checkUser(tx) {
+	const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+  	let result = await assetRegistry.exists(tx.userID);
+  	return result;
 }
 
-rule NetworkAdminUser {
-    description: "Grant business network administrators full access to user resources"
-    participant: "org.hyperledger.composer.system.NetworkAdmin"
-    operation: ALL
-    resource: "**"
-    action: ALLOW
+/**
+ * Get user data function.
+ * @param {org.example.identity.getUserData} tx .
+ * @transaction
+ */
+async function getUserData(tx){
+	const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+  
+  	let exists = await assetRegistry.exists(tx.userID);
+  	var details = "";
+  	if(exists){
+      	
+  		details = await query('GetUserDataForGivenID',{inputValue:tx.userID});
+      	return JSON.stringify(details[0]);
+    }else{
+    	return details;
+    }
+  	
 }
 
-rule NetworkAdminSystem {
-    description: "Grant business network administrators full access to system resources"
-    participant: "org.hyperledger.composer.system.NetworkAdmin"
-    operation: ALL
-    resource: "org.hyperledger.composer.system.**"
-    action: ALLOW
-}
+
+

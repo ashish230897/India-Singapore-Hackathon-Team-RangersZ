@@ -19,7 +19,7 @@
 namespace org.example.identity
 
 participant User identified by userID {
-  o String userID //hash(email + password)
+  o String userID // hash coming from face
   
 }
 
@@ -60,11 +60,7 @@ transaction checkUser {
 transaction getUserData {
 	o String userID
 }
-/*
-transaction getHistory {
-	
-}
-*/
+
 
 event QueriedData {
   o String queriedUserID
