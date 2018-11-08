@@ -76,10 +76,15 @@ async function updateUserData(tx) {
  * @transaction
  */
 async function addDigitalIdentity(tx){
-  tx.sd.digitalIdentities.push(tx.newDigitalIdentity);
   
-  const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
-  await assetRegistry.update(tx.sd);
+  if(tx.sd.digitalIdentities.indexOf(tx.newDigitalIdentity)==-1){
+     tx.sd.digitalIdentities.push(tx.newDigitalIdentity);
+     const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
+  	 await assetRegistry.update(tx.sd);
+   }
+  
+  
+  
 }
 
 
@@ -89,7 +94,9 @@ async function addDigitalIdentity(tx){
  * @transaction
  */
 async function addEvent(tx){
-  tx.sd.events.push(tx.newEvent);
+  
+     tx.sd.events.push(tx.newEvent);
+  
   
   const logData = getFactory().newEvent('org.example.identity','QueriedData');
   logData.forEvent = tx.newEvent;
