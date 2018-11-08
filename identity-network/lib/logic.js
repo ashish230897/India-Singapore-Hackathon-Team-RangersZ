@@ -92,7 +92,6 @@ async function addEvent(tx){
   tx.sd.events.push(tx.newEvent);
   
   const logData = getFactory().newEvent('org.example.identity','QueriedData');
-  //emit event to log data in history
   logData.forEvent = tx.newEvent;
   logData.queriedUserID = tx.sd.userID;
   emit(logData);
@@ -119,13 +118,19 @@ async function checkUser(tx) {
  */
 async function getUserData(tx){
 	const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
-  
+  	const data = getFactory().newEvent('org.example.identity','GetUserData');
+  	data.email = tx.email
   	let exists = await assetRegistry.exists(tx.userID);
   	var details = "";
   	if(exists){
       	
   		details = await query('GetUserDataForGivenID',{inputValue:tx.userID});
+      	data.contact = details[0].contact;
+      	data.firstName = details[0].firstName;
+      	data.lastName = details[0].lastName;
+      	emit(data);
       	return JSON.stringify(details[0]);
+    
     }else{
     	return details;
     }

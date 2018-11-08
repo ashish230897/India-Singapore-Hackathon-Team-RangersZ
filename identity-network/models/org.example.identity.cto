@@ -59,6 +59,7 @@ transaction checkUser {
 @returns(String)
 transaction getUserData {
 	o String userID
+    o String email
 }
 
 
@@ -71,5 +72,12 @@ event UserDataChanged {
   o String[] firstNameChange
   o String[] lastNameChange
   o String[] contactChange
+}
+
+event GetUserData {
+  o String email
+  o String firstName
+  o String lastName
+  o String contact
 }
 

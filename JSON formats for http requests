@@ -49,4 +49,5 @@ Format of JSON to get user data
 {
   "$class": "org.example.identity.getUserData",
   "userID": ""
+  "email" : ""
 }
