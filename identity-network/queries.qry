@@ -18,14 +18,21 @@ query GetHistory {
 query showUpdatedDataHistory{ 
   description: "show history of all update data transactions" 
   statement: 
-    SELECT org.hyperledger.composer.system.HistorianRecord FROM HistorianRegistry
-          WHERE (transactionType == 'UpdateUserData') 
+    SELECT org.hyperledger.composer.system.HistorianRecord
+          WHERE (transactionType == 'org.example.identity.UpdateUserData') 
 } 
 
 query showAddEventHistory{ 
   description: "show history of all event adding transactions to know which user gave data for which event" 
   statement: 
-    SELECT org.hyperledger.composer.system.HistorianRecord FROM HistorianRegistry
-          WHERE (transactionType == 'AddEvent') 
-} 
+    SELECT org.hyperledger.composer.system.HistorianRecord
+          WHERE (transactionType == 'org.example.identity.AddEvent') 
+}
+
+query showGetUserHistory{ 
+  description: "show history of all event adding transactions to know which user gave data for which event" 
+  statement: 
+    SELECT org.hyperledger.composer.system.HistorianRecord
+          WHERE (transactionType == 'org.example.identity.GetUserData') 
+}
  
