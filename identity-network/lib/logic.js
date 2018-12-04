@@ -29,6 +29,7 @@ async function updateUserData(tx) {
   const oldContact = tx.sd.contact;
   
   //create Event object
+  //ADD user id to the logs
   const changedData = getFactory().newEvent('org.example.identity','UserDataChanged');
   changedData.firstNameChange = [];
   changedData.lastNameChange = [];
@@ -76,7 +77,7 @@ async function updateUserData(tx) {
  * @transaction
  */
 async function addDigitalIdentity(tx){
-  
+  // add userId to event
   if(tx.sd.digitalIdentities.indexOf(tx.newDigitalIdentity)==-1){
      tx.sd.digitalIdentities.push(tx.newDigitalIdentity);
      const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
