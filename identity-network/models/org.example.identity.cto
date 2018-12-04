@@ -64,17 +64,20 @@ transaction getUserData {
 
 
 event QueriedData {
+  o String userID
   o String queriedUserID
   o String forEvent
 }
 
 event UserDataChanged {
+  o String userID
   o String[] firstNameChange
   o String[] lastNameChange
   o String[] contactChange
 }
 
 event GetUserData {
+  o String userID
   o String email
   o String firstName
   o String lastName

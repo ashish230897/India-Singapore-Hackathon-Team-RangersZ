@@ -31,6 +31,7 @@ async function updateUserData(tx) {
   //create Event object
   //ADD user id to the logs
   const changedData = getFactory().newEvent('org.example.identity','UserDataChanged');
+  changedData.userID = tx.sd.userID
   changedData.firstNameChange = [];
   changedData.lastNameChange = [];
   changedData.contactChange = [];
@@ -100,6 +101,7 @@ async function addEvent(tx){
   
   
   const logData = getFactory().newEvent('org.example.identity','QueriedData');
+  logData.userID = tx.sd.userID;
   logData.forEvent = tx.newEvent;
   logData.queriedUserID = tx.sd.userID;
   emit(logData);
@@ -128,11 +130,13 @@ async function getUserData(tx){
 	const assetRegistry = await getAssetRegistry('org.example.identity.UserDetails');
   	const data = getFactory().newEvent('org.example.identity','GetUserData');
   	data.email = tx.email
+  	
   	let exists = await assetRegistry.exists(tx.userID);
   	var details = "";
   	if(exists){
       	
   		details = await query('GetUserDataForGivenID',{inputValue:tx.userID});
+      	data.userID = details[0].userID;
       	data.contact = details[0].contact;
       	data.firstName = details[0].firstName;
       	data.lastName = details[0].lastName;
