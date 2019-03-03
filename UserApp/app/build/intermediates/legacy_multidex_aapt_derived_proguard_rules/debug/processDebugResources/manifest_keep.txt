@@ -1,0 +1,2 @@
+# Referenced at /home/ashish/Work/Hackathons/Indo-Singapore Hackathon/Apps/FaceDetection/app/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:25
+-keep class android.support.multidex.MultiDexApplication { <init>(...); }

@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">i-NTU-ART</string>
+    <string name="title_text">Sign In </string>
+    <string name="title_activity_main">i-NTU-ART</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="sign_out">Sign Out</string>
+
+    <!-- Content Description for images -->
+    <string name="desc_google_icon">Google Logo</string>
+
+    <!-- Rationale for asking for Contacts -->
+    <string name="contacts_permission_rationale">Contacts access is needed in order to retrieve your email address.</string>
+
+    <!-- Sign-in status messages -->
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signed_in">Signed in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signed_out">Signed out</string>
+
+    <string name="server_client_id">233931557173-ml2jkje1bp6v26kh8sc6j2h843l1najk.apps.googleusercontent.com</string>
+
+    <string name="facebook_app_id">701576336880658</string>
+    <string name="fb_login_protocol_scheme">fb701576336880658</string>
+    <string name="Progress_Bar">Loading Please Wait</string>
+
+</resources>

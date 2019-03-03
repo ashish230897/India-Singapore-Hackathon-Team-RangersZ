@@ -1,0 +1,4 @@
+#Mon Nov 12 08:46:18 IST 2018
+base.0=/home/ashish/Indo-Singapore Hackathon/FaceDetection/app/build/intermediates/transforms/dexMerger/debug/8
+path.0=classes.dex
+renamed.0=classes.dex
