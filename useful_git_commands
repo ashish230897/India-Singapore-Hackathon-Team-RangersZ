@@ -1,5 +1,0 @@
-git config credential helper cache
-
-git daemon
-git config --global alias serve "daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths --enable=receive-pack .git/"
-git clone git://yourmachine/path/to/repo
