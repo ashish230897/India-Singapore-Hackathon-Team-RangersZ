@@ -16,6 +16,6 @@ Image of workflow:
 
 **As the image workflow describes, all the user information is linked to the user in the blockchain database. This is possible with the help of the user's face which is his unique identity!**
 
-For further queries/collaboration shoot a mail at : **[ashish.agrawal2123@gmail.com]**
+For further queries/collaboration shoot a mail at : **ashish.agrawal2123@gmail.com**  
 For more details about the hackathon visit : [https://ashish230897.github.io/2018/11/12/India-Singapore-Hackathon.html](https://ashish230897.github.io/2018/11/12/India-Singapore-Hackathon.html)
 
